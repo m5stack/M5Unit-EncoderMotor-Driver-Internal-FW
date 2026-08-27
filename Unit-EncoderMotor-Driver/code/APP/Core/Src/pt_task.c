@@ -312,13 +312,13 @@ static PT_THREAD(speed_loop_handle(struct pt *pt))
         int32_t raw_speed     = encoder_now - encoder_last[MOTOR_M1];
         int32_t control_speed = motor_data.encoder_ab_mode ? -raw_speed : raw_speed;
 
-        // Keep the protocol speed value as the raw encoder count delta.
-        motor_data.speed[MOTOR_M1] = raw_speed;
+        // Keep the protocol speed value in the same motor-axis coordinate as SpeedPoint/PID feedback.
+        motor_data.speed[MOTOR_M1] = control_speed;
         encoder_last[MOTOR_M1]     = encoder_now;
 
         int32_t out_data = 0;
         if (motor_data.config[MOTOR_M1][MOTOR_CONFIG_MOTOR_MODE] == 0x02) {
-            if ((*(int8_t *)&motor_data.config[MOTOR_M1][MOTOR_CONFIG_MOTOR_SPEED_POINT] == raw_speed) &&
+            if ((*(int8_t *)&motor_data.config[MOTOR_M1][MOTOR_CONFIG_MOTOR_SPEED_POINT] == control_speed) &&
                 (*(int8_t *)&motor_data.config[MOTOR_M1][MOTOR_CONFIG_MOTOR_SPEED_POINT] == 0)) {
                 out_data                            = 0;
                 motor_data.motor_throttle[MOTOR_M1] = 0;

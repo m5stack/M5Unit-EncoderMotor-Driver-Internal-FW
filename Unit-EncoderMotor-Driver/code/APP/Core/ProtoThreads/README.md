@@ -10,7 +10,7 @@ implemented in C. Protothreads can be used with or without an underlying
 operating system to provide blocking event-handlers.
 
 Protothreads provide sequential flow of control without complex state machines
-or full multi-threading.
+or full multi-threading. 
 
 
 Main features:
@@ -20,12 +20,12 @@ Main features:
   specific assembly code
 * Can be used with or without an OS
 * Provides blocking wait without full multi-threading or stack-switching
-* Freely available under a BSD-like open source license
+* Freely available under a BSD-like open source license 
 
 
 Related links:
 
-Protothreads:
+Protothreads: 
 http://www.sics.se/~adam/pt/index.html
 
 Download of original Protothreads on which this version is based on:
@@ -51,3 +51,4 @@ Now, it is developed by Troy Cheung(TroyC.public@gmail.com).
 email benjamin.soelberg@gmail.com
 blog  http://www.kukkuk.dk
 www   http://www.javadesign.dk
+

@@ -326,8 +326,11 @@ static PT_THREAD(speed_loop_handle(struct pt *pt))
             int32_t encoder_speed = encoder_raw[i].encoder_raw.value - encoder_last[i];
             int32_t control_speed = motor_data.encoder_ab_mode ? -encoder_speed : encoder_speed;
 
-            // Keep the protocol speed value as the raw encoder count delta.
-            motor_data.speed[i] = encoder_speed;
+            // Keep the protocol speed value in the same signed coordinate as
+            // Motor*_Speed_Point. In BA mode the raw encoder delta is inverted
+            // for control, so the externally readable speed must use the same
+            // control_speed value; otherwise a +SpeedPoint reads back negative.
+            motor_data.speed[i] = control_speed;
             encoder_last[i]     = encoder_raw[i].encoder_raw.value;
 
             int32_t out_data = 0;

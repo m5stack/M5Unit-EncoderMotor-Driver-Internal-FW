@@ -70,7 +70,7 @@ LoopCopyDataInit:
   adds r4, r0, r3
   cmp r4, r1
   bcc CopyDataInit
-
+  
 /* Zero fill the bss segment. */
   ldr r2, =_sbss
   ldr r4, =_ebss
@@ -268,3 +268,6 @@ g_pfnVectors:
 
   .weak      USART2_IRQHandler
   .thumb_set USART2_IRQHandler,Default_Handler
+
+
+

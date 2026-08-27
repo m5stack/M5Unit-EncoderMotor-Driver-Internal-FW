@@ -12,7 +12,7 @@ graph TB
         A --> D[编码器处理]
         A --> E[电源监控]
         A --> F[RGB LED指示]
-
+      
         B --> G[主控板<br/>I2C主机]
         C --> H[DRV8837<br/>H桥驱动器]
         H --> I[直流电机 x4]
@@ -34,7 +34,7 @@ stateDiagram-v2
         HardwareInit --> PeripheralInit : 外设初始化
         PeripheralInit --> UserModuleInit : 用户模块初始化
         UserModuleInit --> [*] : 初始化完成
-    }
+    }    
 
     Initializing --> Running : 初始化完成
 
@@ -69,20 +69,20 @@ flowchart TD
     IRQ --> AddrMatch{地址匹配检测}
     AddrMatch -->|匹配| Direction{读写方向判断}
     AddrMatch -->|不匹配| End[结束]
-
+  
     Direction -->|写入| RxMode[接收模式<br/>启用RX中断]
     Direction -->|读取| TxMode[发送模式<br/>启用TX中断]
-
+  
     RxMode --> RxData[接收数据]
     TxMode --> PrepareData[准备发送数据<br/>Slave_Complete_Callback]
     PrepareData --> TxData[发送数据]
-
+  
     RxData --> Stop{STOP信号}
     TxData --> NACK{NACK信号}
-
+  
     Stop -->|是| Callback[Slave_Complete_Callback<br/>数据处理回调]
     NACK -->|是| End
-
+  
     Callback --> ParseData{数据解析}
     ParseData -->|0x20-0x23| MotorControl[电机控制数据]
     ParseData -->|0x30-0x3F| EncoderData[编码器数据]
@@ -90,7 +90,7 @@ flowchart TD
     ParseData -->|0x90-0x92| SystemSet[系统设置]
     ParseData -->|0xA0-0xA4| RGBSet[RGB设置]
     ParseData -->|其他| SystemInfo[系统信息查询]
-
+  
     MotorControl --> End
     EncoderData --> End
     MotorConfig --> End
@@ -108,28 +108,29 @@ flowchart TD
     CheckRange -->|超范围| Limit[限幅处理]
     CheckRange -->|正常| Direction{方向判断}
     Limit --> Direction
-
+  
     Direction -->|正值| Forward[正转<br/>SetMotorDir FORWARD]
     Direction -->|负值| Reverse[反转<br/>SetMotorDir REVERSE]
     Direction -->|零值| Stop[停止<br/>PWM = 0]
-
+  
     Forward --> PWMForward[SetMotorPwm<br/>正向PWM输出]
     Reverse --> PWMReverse[SetMotorPwm<br/>反向PWM输出]
-
+  
     PWMForward --> HBridge[H桥驱动器控制<br/>DRV8837]
     PWMReverse --> HBridge
     Stop --> HBridge
-
+  
     HBridge --> Motor1[Motor 1<br/>TIM1_CH2]
     HBridge --> Motor2[Motor 2<br/>TIM1_CH1]
     HBridge --> Motor3[Motor 3<br/>TIM1_CH4]
     HBridge --> Motor4[Motor 4<br/>TIM1_CH3]
-
+  
     Motor1 --> GPIO1[GPIO方向控制<br/>M1F/M1R]
     Motor2 --> GPIO2[GPIO方向控制<br/>M2F/M2R]
     Motor3 --> GPIO3[GPIO方向控制<br/>M3F/M3R]
     Motor4 --> GPIO4[GPIO方向控制<br/>M4F/M4R]
 ```
+
 ## 编码器处理系统流程图
 
 ```mermaid
@@ -270,7 +271,7 @@ flowchart LR
         DataParse --> ParamUpdate[参数更新]
         ParamUpdate --> ControlExec[控制执行]
     end
-
+  
     subgraph "控制数据流"
         TargetSet[目标值设定] --> PIDController[PID控制器]
         PIDController --> PWMOut[PWM输出]
@@ -279,7 +280,7 @@ flowchart LR
         EncFeedback --> SpeedPosCalc[位置/速度计算]
         SpeedPosCalc --> PIDController
     end
-
+  
     subgraph "监控数据流"
         ADCSamp[ADC采样] --> DataFilter[数据滤波]
         DataFilter --> VoltCurrCalc[电压/电流计算]
@@ -287,3 +288,4 @@ flowchart LR
         I2CDataPrep --> MasterQuery[主机查询响应]
     end
 ```
+
